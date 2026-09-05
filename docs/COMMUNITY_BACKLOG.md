@@ -4,14 +4,24 @@
 Document: COMMUNITY_BACKLOG.md
 Status: Active Maintainer Backlog
 Labels: good first issue, help wanted
+Repository: https://github.com/Chamath-Adithya/depin-mesh-protocol
 ```
 
-This backlog contains actionable, highly scoped tasks designed for new contributors to the DePIN-Mesh Physical Evidence Consensus (PEC) repository. Each entry is formatted so that maintainers or community members can directly copy and publish them as GitHub Issues.
+This backlog contains actionable, highly scoped tasks designed for new contributors to the DePIN-Mesh Physical Evidence Consensus (PEC) repository. Each entry corresponds to an active, trackable issue on GitHub.
+
+## Active Issues Tracker
+
+| Issue | Title | Subsystem Area | Complexity | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| [#1](https://github.com/Chamath-Adithya/depin-mesh-protocol/issues/1) | Implement Q64.64 Saturating Addition and Subtraction | `area/math` | Beginner | Open |
+| [#2](https://github.com/Chamath-Adithya/depin-mesh-protocol/issues/2) | Setup Protobuf Code Generation via buf and prost | `area/proto` | Intermediate | Open |
+| [#3](https://github.com/Chamath-Adithya/depin-mesh-protocol/issues/3) | Enrich CORDIC Transcendental Formulations in RFC-0001 | `area/docs` | Beginner | Open |
 
 ---
 
 ## Issue 1: Implement Q64.64 Saturating Addition and Subtraction
 
+* **GitHub Issue**: [#1](https://github.com/Chamath-Adithya/depin-mesh-protocol/issues/1) (Status: Open on GitHub)
 * **Title**: `[Good First Issue]: Implement Q64.64 Saturating Addition and Subtraction`
 * **Labels**: `good first issue`, `help wanted`, `area/math`, `crates/pec-core`
 * **Mentor**: `@depinmesh-core`
@@ -84,6 +94,7 @@ fn test_saturating_sub_negative_underflow() {
 
 ## Issue 2: Setup Protobuf Generation Script via `buf`
 
+* **GitHub Issue**: [#2](https://github.com/Chamath-Adithya/depin-mesh-protocol/issues/2) (Status: Open on GitHub)
 * **Title**: `[Good First Issue]: Setup Protobuf Code Generation via buf and prost`
 * **Labels**: `good first issue`, `help wanted`, `area/proto`, `build-system`
 * **Mentor**: `@depinmesh-core`
@@ -141,6 +152,7 @@ We require a deterministic code generation pipeline using `buf` to generate Rust
 
 ## Issue 3: Add CORDIC Sine/Cosine LaTeX Formulations to Protocol Specification
 
+* **GitHub Issue**: [#3](https://github.com/Chamath-Adithya/depin-mesh-protocol/issues/3) (Status: Open on GitHub)
 * **Title**: `[Good First Issue]: Enrich CORDIC Transcendental Formulations in RFC-0001`
 * **Labels**: `good first issue`, `help wanted`, `area/docs`, `spec`
 * **Mentor**: `@depinmesh-core`
