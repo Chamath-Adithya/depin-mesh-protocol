@@ -1,0 +1,55 @@
+name: Lint Documentation
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  markdown-lint:
+    name: Markdown Style & Integrity Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify No Em-Dashes
+        run: |
+          echo "Scanning markdown files for em-dashes and en-dashes..."
+          BAD_DASHES=$(grep -rnE "—|–" README.md docs/ spec/ || true)
+          if [ -n "$BAD_DASHES" ]; then
+            echo "Error: Found prohibited dashes in documentation:"
+            echo "$BAD_DASHES"
+            exit 1
+          fi
+          echo "No prohibited dashes found."
+
+      - name: Verify Relative File Links
+        run: |
+          echo "Verifying local documentation file links..."
+          python3 -c '
+          import re, os, sys
+
+          error = False
+          for root, _, files in os.walk("."):
+              if ".git" in root:
+                  continue
+              for f in files:
+                  if f.endswith(".md"):
+                      path = os.path.join(root, f)
+                      with open(path, "r", encoding="utf-8") as handle:
+                          content = handle.read()
+                      links = re.findall(r"\[.*?\]\((?!http|#)(.*?)\)", content)
+                      for link in links:
+                          clean_link = link.split("#")[0]
+                          if not clean_link:
+                              continue
+                          target = os.path.normpath(os.path.join(root, clean_link))
+                          if not os.path.exists(target):
+                              print(f"Broken link in {path}: {link} -> {target}")
+                              error = True
+          if error:
+              sys.exit(1)
+          print("All markdown link references valid.")
+          '

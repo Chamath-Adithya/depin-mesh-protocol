@@ -1,0 +1,58 @@
+name: Spec & Protobuf Validation
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate-proto:
+    name: Validate Protobuf Definitions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Protocol Buffers Compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler
+
+      - name: Compile and Validate Protobufs
+        run: |
+          echo "Compiling Protobuf schemas under spec/proto..."
+          protoc \
+            -I spec/proto \
+            spec/proto/depinmesh/pec/v1/*.proto \
+            --descriptor_set_out=/dev/null
+          echo "Protobuf definitions compiled successfully."
+
+  validate-rfc-formatting:
+    name: Validate RFC Structure & Metadata
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate RFC Metadata Headers
+        run: |
+          echo "Validating RFC status headers..."
+          python3 -c '
+          import glob, sys
+
+          rfcs = glob.glob("spec/RFC-*.md")
+          if not rfcs:
+              print("No RFC files discovered.")
+              sys.exit(1)
+
+          required_fields = ["Status:", "Category:", "Authors:", "Date:", "Version:"]
+          for rfc in rfcs:
+              with open(rfc, "r", encoding="utf-8") as f:
+                  head = f.read(1000)
+              for req in required_fields:
+                  if req not in head:
+                      print(f"Missing header field {req} in {rfc}")
+                      sys.exit(1)
+          print("All RFCs passed header validation.")
+          '

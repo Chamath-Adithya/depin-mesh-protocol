@@ -1,0 +1,45 @@
+name: RFC Proposal
+description: Propose a new protocol standard, invariant model, or architectural change
+title: "[RFC Proposal]: <RFC Title>"
+labels: ["rfc", "protocol-design"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to initiate the formal RFC process for the DePIN-Mesh PEC protocol.
+        Proposals must adhere to the rigor established in `spec/RFC-0001-PHYSICAL-EVIDENCE-CONSENSUS.md`.
+  - type: input
+    id: rfc-title
+    attributes:
+      label: Proposed RFC Title
+      placeholder: "e.g., Acoustic Doppler Invariant Conservation Protocol"
+    validations:
+      required: true
+  - type: textarea
+    id: abstract
+    attributes:
+      label: Executive Summary
+      description: Brief explanation of the problem space, proposed solution, and why existing primitives are insufficient.
+    validations:
+      required: true
+  - type: textarea
+    id: rats-alignment
+    attributes:
+      label: IETF RATS (RFC 9334) Mapping
+      description: Explain how the proposal maps Attesters, Evidence, Endorsements, Reference Values, and Verifiers.
+    validations:
+      required: true
+  - type: textarea
+    id: math-invariants
+    attributes:
+      label: Mathematical Models and Physical Invariants
+      description: Detail relevant conservation equations, tolerance bounds, and Q64.64 deterministic formulations.
+    validations:
+      required: true
+  - type: textarea
+    id: threat-analysis
+    attributes:
+      label: Threat Analysis & Byzantine Attack Surfaces
+      description: Sensor spoofing, collusion vectors, sybil resistance, and silicon root of trust constraints.
+    validations:
+      required: true

@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package depinmesh.pec.v1;
+
+import "depinmesh/pec/v1/evidence.proto";
+
+// Epistemological decision state emitted by the PEC-VM evaluation engine.
+enum DecisionState {
+  DECISION_STATE_UNSPECIFIED = 0;
+  DECISION_STATE_VALID = 1;
+  DECISION_STATE_INVALID = 2;
+  DECISION_STATE_UNKNOWN = 3;
+  DECISION_STATE_CONTESTED = 4;
+}
+
+// Empirical confidence depth metric (PA_0 to PA_10).
+enum PhysicalAssuranceLevel {
+  PHYSICAL_ASSURANCE_LEVEL_UNSPECIFIED = 0;
+  PHYSICAL_ASSURANCE_LEVEL_PA_0 = 1;   // Unattested raw telemetry
+  PHYSICAL_ASSURANCE_LEVEL_PA_1 = 2;   // Single-device RoT with basic calibration bounds
+  PHYSICAL_ASSURANCE_LEVEL_PA_2 = 3;   // Authenticated RoT with factory calibration
+  PHYSICAL_ASSURANCE_LEVEL_PA_3 = 4;   // Monotonic counter secured RoT
+  PHYSICAL_ASSURANCE_LEVEL_PA_4 = 5;   // Multi-sensor local cross-validation
+  PHYSICAL_ASSURANCE_LEVEL_PA_5 = 6;   // Spatial-temporal correlation envelope satisfied
+  PHYSICAL_ASSURANCE_LEVEL_PA_6 = 7;   // Independent peer witness confirmation
+  PHYSICAL_ASSURANCE_LEVEL_PA_7 = 8;   // Passive invariant conservation verified (I_0 - I_3)
+  PHYSICAL_ASSURANCE_LEVEL_PA_8 = 9;   // Full invariant conservation verified (I_0 - I_6)
+  PHYSICAL_ASSURANCE_LEVEL_PA_9 = 10;  // Active challenge-response verified (C_0 - C_2)
+  PHYSICAL_ASSURANCE_LEVEL_PA_10 = 11; // Multi-modality invariant proof with tamper-resistant RoT
+}
+
+// Temporal validity tier relative to phenomenon relaxation times (F_0 to F_3).
+enum FreshnessTier {
+  FRESHNESS_TIER_UNSPECIFIED = 0;
+  FRESHNESS_TIER_F_0 = 1; // Expired or non-deterministic temporal alignment
+  FRESHNESS_TIER_F_1 = 2; // Coarse epoch validity (within protocol cycle bounds)
+  FRESHNESS_TIER_F_2 = 3; // Bounded dynamic synchronization with challenge nonce decay
+  FRESHNESS_TIER_F_3 = 4; // Real-time causal sequence verified via monotonic hardware clocks
+}
+
+// State machine persistence and economic finality tier (SF_0 to SF_5).
+enum SettlementFinalityTier {
+  SETTLEMENT_FINALITY_TIER_UNSPECIFIED = 0;
+  SETTLEMENT_FINALITY_TIER_SF_0 = 1; // Ephemeral observation in relayer transit memory
+  SETTLEMENT_FINALITY_TIER_SF_1 = 2; // Ingested into Physical Evidence Hypergraph
+  SETTLEMENT_FINALITY_TIER_SF_2 = 3; // Evaluated deterministically by PEC-VM
+  SETTLEMENT_FINALITY_TIER_SF_3 = 4; // Soft consensus across relayer verification committee
+  SETTLEMENT_FINALITY_TIER_SF_4 = 5; // Committed to canonical ledger settlement layer
+  SETTLEMENT_FINALITY_TIER_SF_5 = 6; // Irrevocable settlement after challenge window expiration
+}
+
+// Complete 4D Assurance Metric coordinate tuple.
+message AssuranceCoordinate {
+  DecisionState decision_state = 1;
+  PhysicalAssuranceLevel physical_assurance = 2;
+  FreshnessTier freshness = 3;
+  SettlementFinalityTier settlement_finality = 4;
+}
+
+// Physical Claim submitted to or produced by the DePIN-Mesh protocol.
+message PhysicalClaim {
+  // Unique 256-bit claim identifier: SHA-256(claim_content)
+  bytes claim_id = 1;
+
+  // Domain or physical topic identifier (for example, "energy.solar.generation.kwh")
+  string topic = 2;
+
+  // Staking account or entity asserting the claim
+  bytes claimant_account = 3;
+
+  // Target physical entity or geographic bounding box
+  string target_resource_urn = 4;
+
+  // Start timestamp of the physical activity window (Unix nanoseconds)
+  uint64 start_time_ns = 5;
+
+  // End timestamp of the physical activity window (Unix nanoseconds)
+  uint64 end_time_ns = 6;
+
+  // Asserted quantitative magnitude (for example, kilowatt-hours generated)
+  FixedPointQ64 asserted_quantity = 7;
+
+  // Referenced evidence objects supporting this claim
+  repeated bytes supporting_evidence_ids = 8;
+
+  // Current evaluated assurance coordinate
+  AssuranceCoordinate current_assurance = 9;
+}
+
+// Deterministic evaluation report produced by the PEC-VM.
+message EvaluationReport {
+  // Evaluated claim identifier
+  bytes claim_id = 1;
+
+  // Canonical hypergraph snapshot root hash
+  bytes peh_root_hash = 2;
+
+  // Effective independent evidence count (N_eff)
+  FixedPointQ64 effective_independence_count = 3;
+
+  // Physics invariant evaluation mask (bit k set if invariant I_k satisfied)
+  uint32 satisfied_invariants_mask = 4;
+
+  // Maximum dynamic tolerance calculated for claim envelope
+  FixedPointQ64 dynamic_tolerance_epsilon = 5;
+
+  // Resulting 4D assurance coordinate
+  AssuranceCoordinate final_assurance = 6;
+
+  // Contradiction IDs identified during evaluation
+  repeated bytes contradiction_ids = 7;
+
+  // Cryptographic signature of the evaluating PEC-VM node or committee
+  bytes verifier_signature = 8;
+}
