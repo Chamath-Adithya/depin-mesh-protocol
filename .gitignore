@@ -1,17 +1,144 @@
-# Rust build artifacts
-target/
+# ==============================================================================
+# DePIN-Mesh Protocol: Comprehensive Git Ignore Rules
+# Covers: Rust, Embedded Firmware (PlatformIO/ESP-IDF), Protobuf, Python, IDEs, OS
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Rust & Cargo Build Artifacts
+# ------------------------------------------------------------------------------
+/target/
+**/*.rs.bk
+*.profraw
+*.profdata
 Cargo.lock
 
-# PlatformIO
-.platformio/
+# ------------------------------------------------------------------------------
+# Embedded Firmware & Hardware Development
+# ------------------------------------------------------------------------------
+# PlatformIO Core and IDE artifacts
 .pio/
+.pioenvs/
+.piolibdeps/
+.clangd/
 
-# IDE and editors
-.vscode/
+# ESP-IDF / FreeRTOS build trees
+build/
+sdkconfig.old
+sdkconfig.ci
+
+# Compiled firmware binaries and debug symbols
+*.bin
+*.elf
+*.hex
+*.map
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+
+# JTAG / GDB debug logs and traces
+*.gdb
+openocd.log
+
+# ------------------------------------------------------------------------------
+# Protocol Buffers & Code Generation
+# ------------------------------------------------------------------------------
+*.pb
+*.desc
+*.descriptor_set
+
+# ------------------------------------------------------------------------------
+# Cryptographic Keys, Hardware Credentials & Local Environment
+# ------------------------------------------------------------------------------
+# Private keys, certificates, and silicon flash images (must never be committed)
+*.key
+*.pem
+*.der
+*.pfx
+*.p12
+*.crt
+secp256k1_priv.bin
+ed25519_priv.bin
+p256_priv.bin
+rot_seed.bin
+
+# Local environment variables
+.env
+.env.*
+!.env.example
+
+# ------------------------------------------------------------------------------
+# Python & Virtual Environments (Scripts & Tooling)
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+.platformio-venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+
+# ------------------------------------------------------------------------------
+# Test Coverage & Benchmarking Logs
+# ------------------------------------------------------------------------------
+coverage/
+*.lcov
+cobertura.xml
+criterion/
+benchmark_reports/
+*.log
+
+# ------------------------------------------------------------------------------
+# IDEs, Editors & Developer Tooling
+# ------------------------------------------------------------------------------
+# VS Code (preserve shared workspace settings if explicitly tracked)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains (CLion, RustRover, IntelliJ)
 .idea/
+*.iml
+*.iws
+
+# Vim / Emacs / Text editors
+*~
 *.swp
 *.swo
+.#*
+\#*\#
 
-# Environment and OS
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ------------------------------------------------------------------------------
+# Operating System Specific
+# ------------------------------------------------------------------------------
+# macOS
 .DS_Store
-*.env
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+*.fuse_hidden*
