@@ -1,0 +1,54 @@
+name: Good First Issue
+description: Maintainer template for publishing bite-sized, contributor-ready onboarding tasks
+title: "[Good First Issue]: <concise task description>"
+labels: ["good first issue", "help wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This template is intended for maintainers to document approachable, well-scoped onboarding tasks
+        tailored for new contributors to the DePIN-Mesh PEC project.
+  - type: input
+    id: target-file
+    attributes:
+      label: Target File or Module
+      description: Exact file path or directory targeted by this task.
+      placeholder: "e.g., crates/pec-core/src/math/q64.rs"
+    validations:
+      required: true
+  - type: textarea
+    id: background
+    attributes:
+      label: Background and Context
+      description: Explain the goal of this task and how it fits into the broader protocol architecture.
+    validations:
+      required: true
+  - type: textarea
+    id: implementation-steps
+    attributes:
+      label: Step-by-Step Implementation Guide
+      description: Clear, sequential steps for implementing the proposed change.
+      placeholder: |
+        1. Open file ...
+        2. Define function signature ...
+        3. Implement saturation logic handling overflow ...
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria and Test Vectors
+      description: Concrete test cases, mathematical vectors, and formatting checks required for PR merge.
+      placeholder: |
+        - Unit test vector A: add(0x7FFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF, 1) saturates to MAX
+        - `cargo fmt --check` and `cargo clippy` pass cleanly
+    validations:
+      required: true
+  - type: input
+    id: mentor
+    attributes:
+      label: Assigned Maintainer / Mentor
+      description: GitHub handle of the maintainer available to review questions on this issue.
+      placeholder: "@maintainer-handle"
+    validations:
+      required: true

@@ -1,26 +1,30 @@
-## Summary of Changes
+## Technical Summary
 
-Provide a concise, technical description of the modifications, architectural rationale, and targeted subsystems.
+Provide a concise technical description of the proposed changes, architectural rationale, and targeted subsystems.
 
 ## Associated Issue or RFC
 
-Fixes #
-Related RFC: `spec/RFC-xxxx`
+* Closes #
+* Associated RFC: `spec/RFC-xxxx`
 
-## Engineering Checklist
+## Contributor Checklist
 
-- [ ] Adheres strictly to the [Conventional Commits v1.0.0](docs/CONTRIBUTING.md#2-commit-message-conventions) specification.
-- [ ] No IEEE 754 floating-point operations introduced in consensus-critical code paths.
-- [ ] Any mathematical operations comply with the `PEC-MATH-01` Q64.64 deterministic standard.
-- [ ] All new Protobuf schema changes retain backward compatibility and compile cleanly.
-- [ ] Deterministic unit test vectors or invariant fuzzing tests have been added.
-- [ ] Documentation updated to reflect changes without marketing hype or em-dashes.
+Please confirm that your pull request meets all requirements before requesting review:
 
-## Subsystems Touched
+- [ ] **Formatting**: Code formatting conforms to standard via `cargo fmt --all -- --check`.
+- [ ] **Lints & Diagnostics**: Code passes all lints via `cargo clippy --workspace --all-targets -- -D warnings`.
+- [ ] **Test Coverage**: New deterministic unit tests, property fuzzing tests, or test vectors have been added.
+- [ ] **Deterministic Math (`PEC-MATH-01`)**: No IEEE-754 floating-point operations (`f32`, `f64`) introduced in consensus-critical code paths.
+- [ ] **Cross-Architecture Verification**: Tested or checked against `wasm32-unknown-unknown` where applicable.
+- [ ] **Schema Compatibility**: Any modified Protobuf schemas compile cleanly and pass `buf lint spec/proto`.
+- [ ] **Documentation**: Architecture docs, ADRs, or specifications updated without marketing hype or em-dashes.
+- [ ] **Commit Messages**: Commit history adheres strictly to [Conventional Commits v1.0.0](docs/CONTRIBUTING.md#2-commit-message-conventions).
 
-- [ ] `spec/` (Protocol RFCs / Schemas)
-- [ ] `crates/pec-core` (Data Structures & Fixed-Point Math)
-- [ ] `crates/pec-vm` (Verification Engine)
-- [ ] `firmware/` (Embedded Hardware & RoT)
-- [ ] `relayer/` (P2P Transport)
-- [ ] `docs/` (Architecture & Guides)
+## Subsystems Impacted
+
+- [ ] `spec/` (Protocol RFCs & Canonical Protobuf Schemas)
+- [ ] `crates/pec-core/` (Deterministic Q64.64 Math & Hypergraph Data Structures)
+- [ ] `crates/pec-vm/` (Verification Runtime, Invariant Solvers, Conflict Engine)
+- [ ] `firmware/` (Embedded Hardware Drivers, Secure Element RoT Integration)
+- [ ] `relayer/` (P2P Evidence Transport & Sync Daemon)
+- [ ] `docs/` (Architecture Decision Records, System Guides)

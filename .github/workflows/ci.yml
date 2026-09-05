@@ -1,0 +1,153 @@
+name: Production CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  code-quality:
+    name: Code Formatting & Clippy Lints
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Verify Code Formatting
+        run: |
+          if [ -f Cargo.toml ]; then
+            cargo fmt --all -- --check
+          else
+            echo "No root Cargo.toml detected, skipping cargo fmt."
+          fi
+
+      - name: Run Clippy Lints
+        run: |
+          if [ -f Cargo.toml ]; then
+            cargo clippy --workspace --all-targets -- -D warnings
+          else
+            echo "No root Cargo.toml detected, skipping cargo clippy."
+          fi
+
+  deterministic-verification:
+    name: Deterministic Math Verification
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - wasm32-unknown-unknown
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Execute Tests (x86_64)
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        run: |
+          if [ -f Cargo.toml ]; then
+            cargo test --workspace --target ${{ matrix.target }}
+          else
+            echo "No root Cargo.toml detected, skipping native tests."
+          fi
+
+      - name: Verify Build (wasm32)
+        if: matrix.target == 'wasm32-unknown-unknown'
+        run: |
+          if [ -f Cargo.toml ]; then
+            cargo check --workspace --target ${{ matrix.target }}
+          else
+            echo "No root Cargo.toml detected, skipping wasm32 check."
+          fi
+
+  schema-validation:
+    name: Protobuf Schema Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Buf CLI
+        uses: bufbuild/buf-setup-action@v1
+        with:
+          version: "1.30.0"
+
+      - name: Lint Protobuf Schemas
+        uses: bufbuild/buf-lint-action@v1
+        with:
+          input: "spec/proto"
+
+  documentation-check:
+    name: Documentation Integrity & Style Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify No Em-Dashes or En-Dashes
+        run: |
+          echo "Scanning markdown files for prohibited dashes..."
+          python3 -c '
+          import glob, os, sys
+          bad_chars = ["\u2014", "\u2013"]
+          found = []
+          for root, _, files in os.walk("."):
+              if ".git" in root: continue
+              for f in files:
+                  if f.endswith(".md"):
+                      path = os.path.join(root, f)
+                      with open(path, "r", encoding="utf-8", errors="ignore") as handle:
+                          for line_no, line in enumerate(handle, 1):
+                              for ch in bad_chars:
+                                  if ch in line:
+                                      found.append(f"{path}:{line_no}: prohibited dash -> {line.strip()}")
+          if found:
+              print("Documentation check failed. Prohibited dashes found:")
+              print("\n".join(found))
+              sys.exit(1)
+          print("No prohibited dashes found in documentation.")
+          '
+
+      - name: Verify Relative Markdown Links
+        run: |
+          python3 -c '
+          import re, os, sys
+          error = False
+          for root, _, files in os.walk("."):
+              if ".git" in root: continue
+              for f in files:
+                  if f.endswith(".md"):
+                      path = os.path.join(root, f)
+                      with open(path, "r", encoding="utf-8") as handle:
+                          content = handle.read()
+                      links = re.findall(r"\[.*?\]\((?!http|#|mailto)(.*?)\)", content)
+                      for link in links:
+                          clean_link = link.split("#")[0]
+                          if not clean_link: continue
+                          target = os.path.normpath(os.path.join(root, clean_link))
+                          if not os.path.exists(target):
+                              print(f"Broken link in {path}: {link} -> {target}")
+                              error = True
+          if error: sys.exit(1)
+          print("All markdown link targets verified.")
+          '

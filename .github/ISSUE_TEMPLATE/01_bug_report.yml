@@ -1,0 +1,77 @@
+name: Bug Report
+description: Report a defect, consensus divergence, or unexpected behavior in PEC implementation or specs
+title: "[BUG]: <concise description>"
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue in the DePIN-Mesh PEC repository.
+        Please provide complete diagnostic information below to facilitate deterministic reproduction.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Subsystem
+      description: Select the subsystem where the defect manifests.
+      options:
+        - "spec: Formal Protocol Specifications (RFCs)"
+        - "proto: Protobuf Schemas (v1)"
+        - "crates/pec-core: Core Data Structures / Q64.64 Math"
+        - "crates/pec-vm: Invariant Execution Engine / PEH Solver"
+        - "firmware: Embedded Transducer / RoT Logic"
+        - "relayer: P2P Transport and Synchronization"
+        - "docs: Documentation & Governance"
+    validations:
+      required: true
+  - type: input
+    id: cpu-arch
+    attributes:
+      label: Target CPU Architecture
+      description: The underlying processor architecture where the issue was observed.
+      placeholder: "e.g., x86_64, aarch64, riscv32imac, xtensa-esp32s3, wasm32"
+    validations:
+      required: true
+  - type: input
+    id: os-environment
+    attributes:
+      label: Operating System / Toolchain
+      description: OS version, Rust compiler version, and target triple.
+      placeholder: "e.g., Ubuntu 24.04 LTS, rustc 1.82.0 (stable), x86_64-unknown-linux-gnu"
+    validations:
+      required: true
+  - type: input
+    id: silicon-rot
+    attributes:
+      label: Silicon Root of Trust (if applicable)
+      description: Embedded hardware secure element or emulator used.
+      placeholder: "e.g., Microchip ATECC608B, Infineon OPTIGA Trust M, Software Mock"
+    validations:
+      required: false
+  - type: textarea
+    id: invariant-state
+    attributes:
+      label: Invariant or Consensus State Divergence
+      description: Describe the expected versus observed physical invariant state or Q64.64 evaluation.
+      placeholder: "Expected invariant I_0 to evaluate to VALID, but observed CONTESTED with epsilon_E = ..."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Provide the exact commands, test vectors, or input sequences to reproduce the issue.
+      value: |
+        1. Checkout commit ...
+        2. Run cargo test with command ...
+        3. Pass evidence vector ...
+        4. Observe failure in ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Diagnostic Logs / Stack Trace
+      description: Paste relevant terminal logs, stack traces, or compiler error outputs.
+      render: shell
+    validations:
+      required: false

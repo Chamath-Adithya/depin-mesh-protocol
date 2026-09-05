@@ -1,0 +1,17 @@
+[package]
+name = "pec-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "Core data structures, deterministic Q64.64 fixed-point math, and PEH primitives for DePIN-Mesh"
+
+[features]
+default = ["std"]
+std = []
+
+[dependencies]
+
+[dev-dependencies]

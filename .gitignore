@@ -1,0 +1,17 @@
+# Rust build artifacts
+target/
+Cargo.lock
+
+# PlatformIO
+.platformio/
+.pio/
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment and OS
+.DS_Store
+*.env
